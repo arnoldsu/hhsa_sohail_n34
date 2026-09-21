@@ -106,6 +106,8 @@ The future file contains predicted IA, carrier/phase cosine, reconstructed IMF, 
 
 This is not an operational forecast: training uses retrospective full-record HHSA features, there is no calibrated uncertainty interval, and causal peak hindcasts did not beat persistence.
 
+![2028 Nino3.4 prediction including Sohail's NN with HHSA](figures/04_dual_hhsa_forecast_to_2028_12.png)
+
 ## Leakage audit
 
 - Offline M0–M5: full-record decomposition; explicitly labeled diagnostic.
