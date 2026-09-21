@@ -1,0 +1,29 @@
+    Persistence       Raw  EMD-only  Full HHSA  M4 Dual physical
+24         1.73 -0.666306  0.944754   0.372337          0.595722
+25         1.73 -0.705997  0.858553   0.291871          1.044729
+26         1.73 -0.576856  0.674599   0.265078          0.717211
+27         1.73 -0.437639  0.494004   0.283159          1.058914
+28         1.73 -0.478395  0.415925   0.193867          1.738817
+	Command being timed: "python src/forecast_method_comparison.py"
+	User time (seconds): 51.58
+	System time (seconds): 4.61
+	Percent of CPU this job got: 85%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:05.50
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 477984
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3724
+	Minor (reclaiming a frame) page faults: 363828
+	Voluntary context switches: 59792
+	Involuntary context switches: 697
+	Swaps: 0
+	File system inputs: 712482
+	File system outputs: 760
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

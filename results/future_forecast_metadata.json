@@ -1,0 +1,9 @@
+{
+  "last_observation": "2026-07-01",
+  "forecast_start": "2026-08-01",
+  "forecast_end": "2028-12-01",
+  "horizon_months": 29,
+  "method": "M4 Event NN + individual AM-IMF Strength NNs + A*cos(phase) physical reconstruction",
+  "warning": "Experimental; retrospective full-record decomposition for training; no calibrated uncertainty; causal event hindcasts did not beat persistence.",
+  "elapsed_s": 26.407313346862793
+}

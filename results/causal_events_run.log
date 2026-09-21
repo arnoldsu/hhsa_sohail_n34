@@ -1,0 +1,49 @@
+event 1 lead 3 M4 0.22387381017719532
+event 1 lead 6 M4 0.8138345391726036
+event 1 lead 9 M4 0.8053591901105592
+event 2 lead 3 M4 0.08355042670863384
+event 2 lead 6 M4 0.48121588380555175
+event 2 lead 9 M4 -0.4232251276243799
+event 3 lead 3 M4 0.523463947917111
+event 3 lead 6 M4 0.34952489582279705
+event 3 lead 9 M4 0.6472448607937265
+event 4 lead 3 M4 1.159091282011723
+event 4 lead 6 M4 -0.1772962108012378
+event 4 lead 9 M4 -1.036142649119052
+                         method  lead_months  n  correlation     rmse      mae      bias
+                 M0 Persistence            3  4     0.845528 0.631981 0.560000 -0.560000
+                 M0 Persistence            6  4     0.592176 1.010693 0.910000 -0.910000
+                 M0 Persistence            9  4    -0.055971 1.616926 1.380000 -1.380000
+                   M1 Direct NN            3  4    -0.705623 1.412978 1.271940 -1.271940
+                   M1 Direct NN            6  4    -0.757182 1.530585 1.303835 -1.303835
+                   M1 Direct NN            9  4    -0.382853 1.477027 1.277847 -1.228526
+          M2 HHSA single ResNet            3  4     0.644719 0.869969 0.697776 -0.639529
+          M2 HHSA single ResNet            6  4     0.481060 1.430390 1.297830 -1.297830
+          M2 HHSA single ResNet            9  4    -0.454471 1.901392 1.746851 -1.746851
+M4 Dual physical reconstruction            3  4     0.190096 1.190953 1.017505 -1.017505
+M4 Dual physical reconstruction            6  4     0.119258 1.302660 1.148180 -1.148180
+M4 Dual physical reconstruction            9  4    -0.048222 1.793938 1.516691 -1.516691
+elapsed_s 402.0454249382019
+	Command being timed: "python src/run_causal_events.py"
+	User time (seconds): 376.63
+	System time (seconds): 23.96
+	Percent of CPU this job got: 96%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 6:54.63
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 446504
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 20379
+	Minor (reclaiming a frame) page faults: 688129
+	Voluntary context switches: 44131
+	Involuntary context switches: 1512
+	Swaps: 0
+	File system inputs: 1202660
+	File system outputs: 608
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,23 @@
+{
+  "representations": [
+    "Raw",
+    "EMD-only",
+    "Full HHSA"
+  ],
+  "excluded": "second-level AM-IMFs",
+  "common_input_dimension_after_training_only_PCA": 60,
+  "common_network": "Sohail Dense64 + 3 residual 256-128-64 blocks",
+  "offline_seeds": [
+    42,
+    52,
+    62,
+    72,
+    82
+  ],
+  "causal_seeds": [
+    42,
+    52,
+    62
+  ],
+  "elapsed_s": 262.12018156051636
+}

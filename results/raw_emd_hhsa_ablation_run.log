@@ -1,0 +1,62 @@
+causal event 1 lead 3
+causal event 1 lead 6
+causal event 1 lead 9
+causal event 2 lead 3
+causal event 2 lead 6
+causal event 2 lead 9
+causal event 3 lead 3
+causal event 3 lead 6
+causal event 3 lead 9
+causal event 4 lead 3
+causal event 4 lead 6
+causal event 4 lead 9
+representation  lead_months  rmse_mean  rmse_std   r2_mean   r2_std  correlation_mean
+      EMD-only            1   0.350043  0.028698  0.804623 0.032529          0.900901
+      EMD-only            3   0.384447  0.048920  0.762982 0.062265          0.879066
+      EMD-only            6   0.470242  0.077559  0.645943 0.115311          0.811741
+      EMD-only            9   0.465957  0.024851  0.653445 0.036813          0.809776
+      EMD-only           12   0.500231  0.062959  0.591173 0.103736          0.778896
+     Full HHSA            1   0.514382  0.097786  0.568232 0.154261          0.782290
+     Full HHSA            3   0.509635  0.080592  0.580589 0.125225          0.797511
+     Full HHSA            6   0.579299  0.060183  0.469582 0.112714          0.731064
+     Full HHSA            9   0.637509  0.064241  0.347503 0.123786          0.679961
+     Full HHSA           12   0.645034  0.051999  0.325242 0.105119          0.615303
+           Raw            1   0.526566  0.068969  0.554213 0.113276          0.805912
+           Raw            3   0.670152  0.050059  0.285835 0.103508          0.626824
+           Raw            6   0.837341  0.037188 -0.100446 0.098685          0.359808
+           Raw            9   0.888061  0.023993 -0.256698 0.067531          0.230734
+           Raw           12   0.898187  0.036349 -0.303265 0.104522          0.237531
+representation  lead_months  n     rmse      mae      bias
+      EMD-only            3 12 1.476879 1.273812 -1.066936
+      EMD-only            6 12 1.781625 1.518293 -1.330710
+      EMD-only            9 12 1.804077 1.330154 -1.161117
+     Full HHSA            3 12 1.406036 1.211216 -1.211216
+     Full HHSA            6 12 1.665321 1.454780 -1.454780
+     Full HHSA            9 12 1.611600 1.401674 -1.401674
+           Raw            3 12 0.954294 0.675539 -0.601963
+           Raw            6 12 1.373012 1.071542 -1.059691
+           Raw            9 12 1.737978 1.539715 -1.539715
+{"representations": ["Raw", "EMD-only", "Full HHSA"], "excluded": "second-level AM-IMFs", "common_input_dimension_after_training_only_PCA": 60, "common_network": "Sohail Dense64 + 3 residual 256-128-64 blocks", "offline_seeds": [42, 52, 62, 72, 82], "causal_seeds": [42, 52, 62], "elapsed_s": 262.12018156051636}
+	Command being timed: "python src/run_raw_emd_hhsa_ablation.py"
+	User time (seconds): 253.33
+	System time (seconds): 14.16
+	Percent of CPU this job got: 94%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:43.60
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 469916
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 7271
+	Minor (reclaiming a frame) page faults: 806360
+	Voluntary context switches: 16576
+	Involuntary context switches: 1456
+	Swaps: 0
+	File system inputs: 488040
+	File system outputs: 720
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

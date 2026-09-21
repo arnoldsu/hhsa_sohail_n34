@@ -1,0 +1,50 @@
+ level series                          method  lead_months   n  correlation     rmse      mae        r2     slope  variance_ratio
+signal Nino34                  M0 Persistence            1 130     0.959803 0.225138 0.178077  0.919611  0.959709        0.999805
+signal Nino34                  M0 Persistence            3 130     0.801457 0.500792 0.428538  0.602960  0.800656        0.998004
+signal Nino34                  M0 Persistence            6 130     0.459324 0.829205 0.683231 -0.077465  0.456526        0.987854
+signal Nino34                  M0 Persistence            9 130     0.166282 1.026319 0.796385 -0.677477  0.166609        1.003935
+signal Nino34                  M0 Persistence           12 130    -0.006410 1.123908 0.862538 -1.037941 -0.006465        1.017054
+signal Nino34                    M1 Direct NN            1 130     0.873946 0.414689 0.318107  0.727261  0.738223        0.713521
+signal Nino34                    M1 Direct NN            3 130     0.676874 0.637915 0.482833  0.355766  0.505208        0.557089
+signal Nino34                    M1 Direct NN            6 130     0.374966 0.833892 0.642659 -0.089678  0.227417        0.367842
+signal Nino34                    M1 Direct NN            9 130     0.295346 0.893882 0.699795 -0.272485  0.192335        0.424086
+signal Nino34                    M1 Direct NN           12 130     0.253148 0.906867 0.720219 -0.326837  0.163520        0.417250
+signal Nino34           M2 HHSA single ResNet            1 130     0.892017 0.407984 0.345960  0.736010  0.948518        1.130694
+signal Nino34           M2 HHSA single ResNet            3 130     0.853196 0.421226 0.343013  0.719102  0.788421        0.853924
+signal Nino34           M2 HHSA single ResNet            6 130     0.889047 0.428271 0.357715  0.712580  0.560399        0.397325
+signal Nino34           M2 HHSA single ResNet            9 130     0.880410 0.483499 0.395550  0.627708  0.471877        0.287268
+signal Nino34           M2 HHSA single ResNet           12 130     0.724245 0.551469 0.474692  0.509349  0.444750        0.377104
+signal Nino34 M4 Dual physical reconstruction            1 130     0.949620 0.259205 0.208059  0.893442  0.966156        1.035130
+signal Nino34 M4 Dual physical reconstruction            3 130     0.936704 0.282005 0.227657  0.874099  0.930128        0.986010
+signal Nino34 M4 Dual physical reconstruction            6 130     0.890005 0.364503 0.278147  0.791800  0.800942        0.809873
+signal Nino34 M4 Dual physical reconstruction            9 130     0.845652 0.439742 0.346287  0.692045  0.771219        0.831708
+signal Nino34 M4 Dual physical reconstruction           12 130     0.796648 0.485974 0.366810  0.618973  0.713744        0.802698
+signal Nino34           M5 Dual fusion ResNet            1 130     0.220709 0.799387 0.653968 -0.013482  0.090892        0.169594
+signal Nino34           M5 Dual fusion ResNet            3 130     0.022775 1.228512 1.042113 -1.389338  0.013563        0.354642
+signal Nino34           M5 Dual fusion ResNet            6 130    -0.130352 0.864377 0.716429 -0.170806 -0.034828        0.071389
+signal Nino34           M5 Dual fusion ResNet            9 130     0.479361 0.875135 0.745803 -0.219670  0.227814        0.225858
+signal Nino34           M5 Dual fusion ResNet           12 130     0.084737 1.155621 0.994182 -1.154574  0.031694        0.139895
+{"wall_s": 31.032723903656006, "peak_rss_mib": 469.51953125, "mean_cpu_percent": 95.26129032258065, "imf_carriers": 6, "residual_components": 1, "offline_full_record": true}
+	Command being timed: "python src/run_dual_hhsa.py"
+	User time (seconds): 34.32
+	System time (seconds): 3.70
+	Percent of CPU this job got: 96%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:39.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 481372
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 2704
+	Minor (reclaiming a frame) page faults: 329540
+	Voluntary context switches: 5820
+	Involuntary context switches: 557
+	Swaps: 0
+	File system inputs: 207732
+	File system outputs: 5736
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
