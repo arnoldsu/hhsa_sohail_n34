@@ -1,5 +1,7 @@
 # 基於 HHSA 雙分支神經網路的 Niño3.4 事件時序與強度預報
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884201.svg)](https://doi.org/10.5281/zenodo.22884201)
+
 ## Conceptual framework
 
 The experiment applies Sohail's neural-network approach to HHSA-derived
@@ -208,7 +210,8 @@ $$
 不用裸相位 (phi) 作 target，因為 (phi) 在 (2\pi) 處存在不連續。網路輸出 future phasor：
 
 $$
-NN_E(X_E)ightarrow
+NN_E(X_E)
+ightarrow
 (\widehat{\cos\phi_i(t+k)},\widehat{\sin\phi_i(t+k)}).
 $$
 
