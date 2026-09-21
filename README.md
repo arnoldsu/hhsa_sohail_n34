@@ -1,140 +1,227 @@
-# HHSA–Sohail Dual-Network Niño3.4 Forecast Experiment
+# Niño3.4 Forecasting with Raw, EMD, and HHSA State Representations
 
-## Conceptual framework
+## Purpose
 
-The experiment applies Sohail's neural-network approach to HHSA-derived
-Niño3.4 event and strength components.
+This project tests whether EMD or full Hilbert–Huang spectral analysis (HHSA) adds predictive information beyond the raw Niño3.4 time series.
 
-![Application of Sohail's NN with HHSA](figures/sohail_nn_hhsa_framework.png)
+The primary matched comparison uses:
 
-**Figure 1. Application of Sohail's NN with HHSA.**  
-Sohail's neural-network framework is adapted to HHSA by separating
-event/timing information (IMF, IF and IP) from strength/amplitude
-information (IA and AM-IMFs). Separate neural networks are then used
-to predict the future event phase and amplitude before reconstructing
-the future Niño3.4 state.
+1. **Raw Sohail ResNet** — raw Niño3.4 lags;
+2. **EMD-only Sohail ResNet** — first-level IMFs and residual;
+3. **Full-HHSA Sohail ResNet** — IMFs, instantaneous amplitude, instantaneous frequency, and phase phasors.
 
-## Objective
+Persistence is retained as a non-neural baseline. A separate **Dual-HHSA physical reconstruction** is retained as an additional interpretable experiment. The earlier M0–M5 labels are no longer used as the primary terminology because they mixed baselines, intermediate branches, and final forecasts.
 
-This independent project tests whether ENSO event timing and event strength are more predictable when modeled separately. It uses the existing local Niño3.4 record and the existing project masking-EMD/direct-quadrature implementation. It does not use the unrelated third-party `emd` package.
+## Relation to Sohail et al.
 
-## Data and decomposition
+The matched neural network follows the dense residual-network pattern in Sohail, Zika, and Ehmen, *How accurate are salinity measurements around Antarctica? A machine learning based approach*, **Machine Learning: Earth**, DOI: [10.1088/3049-4753/ae7113](https://doi.org/10.1088/3049-4753/ae7113).
 
-- Record: 1948-01 to 2026-07, 943 monthly values, no missing values.
-- First level: six oscillatory IMFs plus one residual.
-- Second level: each first-level instantaneous amplitude is decomposed into AM-IMFs plus its amplitude residual.
-- `upsample_level=0` is used so that the decomposition reconstructs exactly.
+The accompanying code and data are archived at Zenodo DOI: [10.5281/zenodo.14010532](https://doi.org/10.5281/zenodo.14010532).
 
-$$x(t)=\sum_{i=1}^6 IMF_i(t)+r(t)$$
+Sohail et al. did not develop an ENSO or HHSA forecasting system. This project adapts their state-vector, dense feed-forward, residual-block, cyclic-coordinate, Adam/MSE, and early-stopping concepts. The EMD/HHSA inputs, timing/strength separation, physical synthesis, causal hindcasts, and Niño3.4 application are specific to this project.
 
-$$IMF_i(t)=A_i(t)\cos\phi_i(t)$$
+## Data
 
-$$A_i(t)=\sum_j AMIMF_{ij}(t)+r_i^{AM}(t)$$
+- Monthly Niño3.4 anomaly, °C;
+- January 1948–July 2026;
+- 943 samples and no missing values;
+- local input: `data/nino34_monthly.csv`;
+- 12 samples per year.
 
-## Models
+No replacement Niño3.4 dataset was downloaded.
 
-- **M0 Persistence:** $\hat x(t+k)=x(t)$.
-- **M1 Direct NN:** 60 raw Niño3.4 lags directly predict future Niño3.4.
-- **M2 HHSA single-state ResNet:** one HHSA state vector predicts future Niño3.4.
-- **M3 Event/Strength branches:** branch skills are evaluated separately.
-- **M4 Physical reconstruction:** predicted amplitude and phase are recombined analytically.
-- **M5 Fusion ResNet:** a small residual network combines the branch predictions.
+## EMD and HHSA
 
-### Event NN — When?
+The project uses the existing local MATLAB-port masking-EMD and direct-quadrature implementation, not the unrelated third-party `emd` package.
 
-The event branch receives 60 months of
+$$
+x(t)=\sum_{i=1}^{6}IMF_i(t)+r(t)
+$$
 
-$$[IMF_i,IF_i,\cos\phi_i,\sin\phi_i]$$
+$$
+IMF_i(t)=A_i(t)\cos\phi_i(t)
+$$
 
-and predicts future phase phasors $(\widehat{\cos\phi_i},\widehat{\sin\phi_i})$. Every predicted phasor is normalized to unit length before reconstruction. This avoids the $2\pi$ phase discontinuity.
+$$
+f_i(t)=\frac{1}{2\pi}\frac{d\phi_i(t)}{dt}
+$$
 
-### Strength NNs — How strong?
+There are six oscillatory IMFs and one residual. `upsample_level=0` is used so that the decomposition reconstructs without dropping the first high-frequency mode.
 
-Every real AM-IMF has its own small neural network:
+## Primary matched methods
 
-$$AMIMF_{ij}(t-L_{ij}+1:t)ightarrow\widehat{AMIMF}_{ij}(t+k).$$
+### Raw Sohail ResNet
 
-The history length is selected from the training-period component timescale:
+The input is a 60-month raw Niño3.4 window:
 
-$$L_{ij}=\operatorname{clip}(2T_{ij},12,60).$$
+$$
+[x(t-59),\ldots,x(t)].
+$$
 
-The amplitude is reconstructed as
+### EMD-only Sohail ResNet
 
-$$\widehat A_i=\sum_j\widehat{AMIMF}_{ij}+\widehat r_i^{AM}.$$
+The input contains 60-month histories of the six IMFs and residual:
 
-### M4 physical synthesis
+$$
+[IMF_1,\ldots,IMF_6,r]_{t-59:t}.
+$$
 
-No third neural network is required:
+It does not use instantaneous amplitude, frequency, or phase.
 
-$$\widehat{IMF}_i(t+k)=\widehat A_i(t+k)\cos\widehat\phi_i(t+k)$$
+### Full-HHSA Sohail ResNet
 
-$$\widehat x(t+k)=\sum_{i=1}^6\widehat{IMF}_i(t+k)+\widehat r(t+k).$$
+The input contains first-level HHSA information:
 
-## Offline/diagnostic results
+$$
+[IMF_i,A_i,f_i,\cos\phi_i,\sin\phi_i,r]_{t-59:t}.
+$$
 
-Chronological 70/15/15 splitting is used; all scaling is fit on training data only. The decomposition itself uses the full record, so these results are explicitly diagnostic rather than real-time.
+Second-level AM-IMFs are excluded from this matched comparison. This isolates the incremental value of first-level Hilbert information beyond EMD.
 
-R²:
+### Identical model and dimension
 
-|   lead_months |   M0 Persistence |   M1 Direct NN |   M2 HHSA single ResNet |   M4 Dual physical reconstruction |   M5 Dual fusion ResNet |
-|--------------:|-----------------:|---------------:|------------------------:|----------------------------------:|------------------------:|
-|             1 |            0.92  |          0.727 |                   0.736 |                             0.893 |                  -0.013 |
-|             3 |            0.603 |          0.356 |                   0.719 |                             0.874 |                  -1.389 |
-|             6 |           -0.077 |         -0.09  |                   0.713 |                             0.792 |                  -0.171 |
-|             9 |           -0.677 |         -0.272 |                   0.628 |                             0.692 |                  -0.22  |
-|            12 |           -1.038 |         -0.327 |                   0.509 |                             0.619 |                  -1.155 |
+Every representation is standardized with training data only and projected to 60 dimensions using training-only PCA. All three then use exactly the same Sohail-style dense residual network:
 
-M4 is the strongest HHSA method. At 3/6/9/12 months its R² is 0.874/0.792/0.692/0.619. M5 performs poorly: the validation-only fusion sample is small and the fusion network overfits. M5 therefore provides no evidence of improvement.
-
-## Causal-prefix El Niño peak hindcasts
-
-For the held-out 2015, 2018, 2020, and 2023 peaks, decomposition and training are repeated using only data available at each 3/6/9-month forecast origin.
-
-RMSE (°C):
-
-|   lead_months |   M0 Persistence |   M1 Direct NN |   M2 HHSA single ResNet |   M4 Dual physical reconstruction |
-|--------------:|-----------------:|---------------:|------------------------:|----------------------------------:|
-|             3 |            0.632 |          1.413 |                   0.87  |                             1.191 |
-|             6 |            1.011 |          1.531 |                   1.43  |                             1.303 |
-|             9 |            1.617 |          1.477 |                   1.901 |                             1.794 |
-
-M4 does not beat persistence in this causal event experiment. Its 3/6/9-month RMSE is 1.191/1.303/1.794 °C, compared with persistence 0.632/1.011/1.617 °C. Strong events are systematically underestimated. With only four events per lead, correlations are unstable.
-
-## Experimental forecast to 2028-12
-
-The future file contains predicted IA, carrier/phase cosine, reconstructed IMF, residual, and final Niño3.4 for every month from 2026-08 through 2028-12. The final value for 2028-12 is 1.739 °C.
-
-This is not an operational forecast: training uses retrospective full-record HHSA features, there is no calibrated uncertainty interval, and causal peak hindcasts did not beat persistence.
-
-![2028 Nino3.4 prediction including Sohail's NN with HHSA](figures/04_dual_hhsa_forecast_to_2028_12.png)
-
-## Leakage audit
-
-- Offline M0–M5: full-record decomposition; explicitly labeled diagnostic.
-- Chronological split; no random time split.
-- Scaling fit on training periods only.
-- M5 fusion is trained only on validation-period base predictions, not base-training predictions.
-- Causal event predictors use only the prefix ending at the forecast origin.
-- Rolling EMD mode identity and endpoint instability remain scientific limitations.
-
-## Reproduce
-
-```bash
-OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python src/run_dual_hhsa.py
-OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python src/run_causal_events.py
-OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python src/forecast_future.py
-python src/finalize_report.py
+```text
+60 inputs
+→ Dense(64)
+→ 3 × [Dense(256) → Dense(128) → Dense(64) + skip connection]
+→ multi-lead Niño3.4 output
 ```
 
-## Outputs
+Offline tests use seeds 42, 52, 62, 72, and 82. Causal event tests use the first three seeds.
 
-- `results/metrics.csv`, `results/predictions.csv`: offline M0–M5 results.
-- `results/branch_metrics.csv`: Event and Strength branch skill.
-- `results/causal_event_predictions.csv`, `causal_event_metrics.csv`: held-out event hindcasts.
-- `results/dual_hhsa_forecast_to_2028_12.csv`: future component and signal forecasts.
-- `models/`: trained PyTorch weights.
-- `figures/01_M0_M5_skill.png` through `figures/06_strength_branch_ia_skill.png`.
+## Additional Dual-HHSA physical reconstruction
 
-## Resources
+This separate experiment predicts event timing and amplitude strength in different branches. The event network predicts phase phasors from IMF, frequency, and phase histories. Individual strength networks predict second-level amplitude components:
 
-Offline run: 31.0 s internal wall time, peak Python RSS 469.5 MiB, mean CPU 95.3%. Causal event run took about 6m55s and peaked near 436 MiB RSS. Future run took about 53s wall time and peaked near 443 MiB RSS.
+$$
+A_i(t)=\sum_j AMIMF_{ij}(t)+r_i^{AM}(t).
+$$
+
+The outputs are physically recombined:
+
+$$
+\widehat{IMF}_i(t+k)=\widehat A_i(t+k)\cos\widehat\phi_i(t+k)
+$$
+
+$$
+\widehat x(t+k)=\sum_{i=1}^{6}\widehat{IMF}_i(t+k)+\widehat r(t+k).
+$$
+
+This is an additional model, not part of the architecture-matched Raw/EMD/Full-HHSA test.
+
+![Application of the Sohail-style network to HHSA timing and strength](figures/sohail_nn_hhsa_framework.png)
+
+## Experimental design
+
+### Offline diagnostic
+
+The chronological split is 70% training, 15% validation, and 15% test. Scaling and PCA are fit on training data only. EMD/HHSA is nevertheless calculated on the full record before splitting, so these results are diagnostic rather than real-time.
+
+### Causal-prefix El Niño test
+
+For the held-out 2015, 2018, 2020, and 2023 El Niño peaks, the record is truncated at each 3-, 6-, and 9-month forecast origin. EMD/HHSA and training use only that prefix. Three seed predictions are averaged within each event before summary skill is calculated. The independent sample size is four events, not twelve seed-event combinations.
+
+## Matched offline results
+
+Mean test-set R² across five seeds:
+
+| Lead | Raw | EMD-only | Full HHSA |
+|---:|---:|---:|---:|
+| 1 month | 0.554 | **0.805** | 0.568 |
+| 3 months | 0.286 | **0.763** | 0.581 |
+| 6 months | -0.100 | **0.646** | 0.470 |
+| 9 months | -0.257 | **0.653** | 0.348 |
+| 12 months | -0.303 | **0.591** | 0.325 |
+
+EMD-only is strongest at every offline lead. Full HHSA outperforms Raw at 3–12 months, but amplitude, frequency, and phase do not improve on EMD-only.
+
+![Matched offline representation ablation](figures/07_raw_emd_hhsa_offline_ablation.png)
+
+## Matched causal event results
+
+Peak-amplitude RMSE after averaging seeds within each of four independent events:
+
+| Lead | Raw | EMD-only | Full HHSA |
+|---:|---:|---:|---:|
+| 3 months | **0.947** | 1.462 | 1.388 |
+| 6 months | **1.359** | 1.766 | 1.654 |
+| 9 months | 1.710 | 1.790 | **1.579** |
+
+Raw is best at 3 and 6 months. Full HHSA is best at 9 months, but all errors are large and only four events are available. The offline EMD advantage does not transfer reliably to causal event prediction.
+
+![Causal El Niño representation ablation](figures/08_raw_emd_hhsa_causal_ablation.png)
+
+## Forecasts through December 2028
+
+The comparison figure contains historical held-out R² and future forecasts for Persistence, Raw, EMD-only, Full HHSA, and Dual-HHSA physical reconstruction. Raw, EMD-only, and Full HHSA show five-seed means and seed ranges.
+
+![Historical skill and future method comparison](figures/04_dual_hhsa_forecast_to_2028_12.png)
+
+December 2028 point forecasts are:
+
+| Method | Niño3.4 anomaly |
+|---|---:|
+| Persistence | 1.730 °C |
+| Raw Sohail ResNet | -0.478 °C |
+| EMD-only Sohail ResNet | 0.416 °C |
+| Full-HHSA Sohail ResNet | 0.194 °C |
+| Dual-HHSA physical reconstruction | 1.739 °C |
+
+Future trajectories cannot establish which method is correct until observations become available. Historical offline skill favors EMD-only among the matched models, but this preference is provisional because EMD-only does not win the causal event test.
+
+## Interpretation
+
+1. EMD provides a strong offline representation advantage over Raw.
+2. First-level Hilbert amplitude/frequency/phase adds offline skill over Raw, but not over EMD-only.
+3. Neither EMD nor Full HHSA has a stable advantage in the four-event causal test.
+4. Full-record decomposition leakage, endpoint effects, and cross-origin mode instability remain plausible explanations for the offline/causal difference.
+5. This project does not yet demonstrate operational forecast improvement from HHSA.
+
+## Robustness limitations
+
+- Full-record decomposition can transfer future boundary information into offline features.
+- Historical training samples inside a causal prefix do not each receive their own rolling decomposition.
+- Only four independent held-out El Niño events are available.
+- Cross-origin IMF mode matching is not implemented.
+- Future seed ranges are not calibrated confidence intervals.
+- Dataset provenance and anomaly baseline require formal documentation before journal submission.
+
+## Reproduction
+
+```bash
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+
+python src/run_raw_emd_hhsa_ablation.py
+python src/forecast_method_comparison.py
+```
+
+The additional Dual-HHSA experiment is reproduced with:
+
+```bash
+python src/run_dual_hhsa.py
+python src/run_causal_events.py
+python src/forecast_future.py
+```
+
+## Principal outputs
+
+- `results/raw_emd_hhsa_offline_summary.csv`
+- `results/raw_emd_hhsa_causal_summary.csv`
+- `results/raw_emd_hhsa_causal_event_means.csv`
+- `results/future_method_comparison_to_2028_12.csv`
+- `results/raw_emd_hhsa_ablation_metadata.json`
+- `figures/04_dual_hhsa_forecast_to_2028_12.png`
+- `figures/07_raw_emd_hhsa_offline_ablation.png`
+- `figures/08_raw_emd_hhsa_causal_ablation.png`
+
+Legacy Dual-HHSA branch metrics and model weights are retained for provenance, but they are not the primary matched comparison.
+
+## References
+
+1. Sohail, T., Zika, J. D., and Ehmen, T. *How accurate are salinity measurements around Antarctica? A machine learning based approach*. **Machine Learning: Earth**. DOI: [10.1088/3049-4753/ae7113](https://doi.org/10.1088/3049-4753/ae7113).
+2. Sohail, T. (2024). *Machine learning-based quality assessment of Antarctic margins salinity — code, data and figures*, Version 1.0. Zenodo. DOI: [10.5281/zenodo.14010532](https://doi.org/10.5281/zenodo.14010532).
+3. Huang, N. E., Shen, Z., Long, S. R., et al. (1998). The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis. *Proceedings of the Royal Society A*, 454, 903–995. DOI: [10.1098/rspa.1998.0193](https://doi.org/10.1098/rspa.1998.0193).
