@@ -1,5 +1,7 @@
 # Niño3.4 Forecasting with Raw, EMD, and HHSA State Representations
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884201.svg)](https://doi.org/10.5281/zenodo.22884201)
+
 ## Purpose
 
 This project tests whether EMD or full Hilbert–Huang spectral analysis (HHSA) adds predictive information beyond the raw Niño3.4 time series.
