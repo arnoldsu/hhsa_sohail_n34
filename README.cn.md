@@ -85,6 +85,11 @@ Sohail、Zika 與 Ehmen 的研究 *How accurate are salinity measurements around
 - 使用 early stopping、learning-rate reduction 與 checkpointing；
 - 針對不同資料分割方式評估 out-of-sample 表現。
 
+簡單來說 Sohail 的 Machine Learning（Fully Connected Neural Network (FNN) with residual connections）方法在做什麼
+第一個重點：Machine Learning 本質上就是大量而快速地嘗試不同的數字組合。 傳統的 multiple linear regression 通常是找出一組 coefficients，看看不同輸入資料應該各乘多少，最後得到最接近答案的結果。Neural Network 的基本概念其實很相似，只是它不是只做一組，而是透過很多 Dense layers 同時建立大量不同的 weighted combinations。每一個 Dense neuron 都可以簡單理解成一條有自己 coefficients 的計算方式。電腦的優勢就是可以一次處理很多這樣的組合，而且速度非常快。
+第二個重點：ReLU（Rectified Linear Unit）可以簡單想成一個開關，讓這些大量的數字組合可以被選擇性地使用。 Dense 算完很多 combinations 之後，ReLU 把正的結果留下，把負的結果變成零。這樣不同的 input data 進入 network 時，會打開或關掉不同的 neurons。換句話說，Neural Network 並不是永遠使用同一套 combinations，而是不同的資料狀態可以啟動不同的 combinations。Dense 負責「混合、組合資料」，ReLU 負責「哪些組合現在要繼續往下傳」。一層一層重複 Dense、ReLU、Dense、ReLU，就是所謂的 deep neural network；名稱聽起來複雜，但基本操作就是反覆做這兩件事情。
+第三個重點：Training 就像不斷修正一個 cookie cutter，直到它能做出合理的形狀。 一開始 Neural Network 裡面大量的 weights 和 biases 還沒有調整好，所以第一次 prediction 通常不準。Network 把 prediction 和真正答案比較，看看錯了多少，再根據這個 error 修改裡面的數字，然後重新 prediction、重新比較、再修改。電腦可以非常快速地重複這個過程很多次。最後真正被「學習」下來的，其實就是這一大堆調整好的 weights 和 biases。就像 cookie cutter 一開始形狀還沒有調好，經過大量「做一次、比較、修一點、再做一次」之後，模具逐漸成形。Training 完成後，再把新的資料放進這個已經調好的 network，就可以很快得到 prediction。最重要的不是把 training data 完全背下來，而是讓這個「cookie cutter」抓到共同的 pattern，對沒有看過的新資料也能有好的表現。
+
 ### 2.2 不能直接照搬的部分
 
 Sohail 原研究不是 ENSO 時間序列預報，也沒有使用 EMD、HHSA、instantaneous amplitude 或 instantaneous phase。因此本研究中的「Sohail-style」只指以下可轉移原則：
